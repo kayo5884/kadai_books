@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<link rel="stylesheet" href="css/sample.css">
+<title>GoogleBook検索</title>
+</head>
+<body>
+
+  <header>
+    <h1>GoogleBooks検索</h1>
+    <p id=textarea>
+      <input type="text" id="keyword" placeholder="キーワードを入力" value="">
+      <button id="readbook">検索</button>
+    </p>
+  </header>
+
+  <main>
+    <div>
+    <p id="content"></p>
+    <a id="link" href="amazon" target="_blank"></a>
+    </div>
+  </main>
+
+
+<script src="js/jquery-3.5.1.min.js"></script>
+<script>
+// 手順
+// 1. $.get() を使って 情報を取得する
+// 2. JSONデータ構造を基に本のタイトルを取得する
+// 3. 本のタイトル情報をHTMLに出力する
+// ---ここからは課題！
+// 4. クリックイベントで括る
+// 5. id="keyword"の入力値を取得 → URLの"?q=jquery"の"queryの文字を取得した入力値（変数）に変える"
+// 6. 出版社も表示してみよう！（データ構造はconsole.logで確認！！）
+
+// 4. クリックイベントで括る
+$("#readbook").on("click", function(){
+
+    // 1. $.get() を使って 情報を取得する
+    // $.get() を使う[開始]
+    //volumeinfoのタイトルに入っていそう
+    // 5. id="keyword"の入力値を取得 → URLの"?q=jquery"の"queryの文字を取得した入力値（変数）に変える"
+      // console.log(keyword.value);
+      const value = keyword.value;
+      const url = "https://www.googleapis.com/books/v1/volumes?q="+value
+      // console.log(url);
+      //  https://www.googleapis.com/books/v1/volumes?q=jquery
+      // ？の前までが実際のurl
+
+    $.get(url, function(data){
+      // console.log(data);
+      // オブジェクト化されたものがdataに保管されている
+      const items = data.items
+      // console.log(items);
+
+      let view = ""
+
+      // 2. JSONデータ構造を基に本のタイトルを取得する
+      for(let i = 0; i < items.length; i++){
+        const item = items[i];
+        // console.log(item.volumeInfo.title)
+        //itemの中のvolumeInfoの中のtitleで取得している
+        const title = item.volumeInfo.title
+        const publisher = item.volumeInfo.publisher
+        const authors = item.volumeInfo.authors
+        const publisheddate = item.volumeInfo.publishedDate
+        const description = item.volumeInfo.description
+        // 3. 本のタイトル情報をHTMLに出力する
+        view += '<ul>'
+          view +='<li id=list>'
+          view +='<h3>題名:'+ title +'</h3>'
+          view +='<p>著者:'+ authors +'</p>'
+          view +='<details><summery></summery>'
+            view +='<p>出版社:'+ publisher +'</p>'
+            view +='<p>出版日:'+ publisheddate + '</p>'
+            view +='<p>サマリー:</p>'
+              view += '<p id=description>' + description + '</p>'
+          view += '</details>'
+          view += '</li>';
+          view += '</ul>';
+        // console.log(view)
+      };
+      $("#content").html(view);
+    });
+  });
+
+$("#keyword").on("keydown", function(e){
+  if(e.keyCode==13){
+      const value = keyword.value;
+      const url = "https://www.googleapis.com/books/v1/volumes?q="+value
+
+    $.get(url, function(data){
+      const items = data.items
+      let view = ""
+
+        for(let i = 0; i < items.length; i++){
+          const item = items[i];
+          // const image = item.volumeInfo.imageLinks.smallThumbnail
+          const title = item.volumeInfo.title
+          const publisher = item.volumeInfo.publisher
+          const authors = item.volumeInfo.authors
+          const publisheddate = item.volumeInfo.publishedDate
+          const description = item.volumeInfo.description
+
+          const amazon = "https://www.amazon.co.jp/s?k="+ title +"&i=stripbooks"
+          console.log(amazon)
+          // const link = <a href="amazon" target="_blank">amazonへのリンク</a>
+          // view += <a href="amazon" target="_blank">
+          // view += '<p>amazonへのリンク</p>'
+          // view += </a>
+
+          view += '<ul>'
+          view +='<li id=list>'
+          // console.log(image)
+          // view +='<p>画像:</p>'+ <img scr=image> 
+          view +='<h3>題名:'+ title +'</h3>'
+          view +='<p>著者:'+ authors +'</p>'
+          view +='<details><summery></summery>'
+            view +='<p>出版社:'+ publisher +'</p>'
+            view +='<p>出版日:'+ publisheddate + '</p>'
+            view +='<p>サマリー:</p>'
+              view += '<p id=description>' + description + '</p>'
+          view += '</details>'
+          view += '</li>';
+          view += '</ul>';
+          $("#content").html(view);
+          // $("link").html()
+          // var target = document.getElementById("link")
+          // target.href = "amazon"
+        };
+    });
+  };
+});
+
+
+// なぜ詳細が消えないのか
+// 折りたたみ三角の選択範囲を広げるためには？
+// amazonへのハイパーリンクの置き方
+
+
+</script>
+</body>
+</html>
