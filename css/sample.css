@@ -31,6 +31,14 @@ p {
   text-align: center;
 }
 
+a{
+  color: #003366;
+}
+a:hover{
+  color: #ffff;
+}
+
+
 ul {
   margin: 10px auto;
   display: table;
@@ -49,9 +57,6 @@ li {
   cursor: pointer;
 }
 
-details:hover {
-  color: #fff;
-}
 
 details[open] {
   padding: 5px;
@@ -73,3 +78,5 @@ textarea{
   font-size:50%;
   box-shadow: 3px 3px 3px 3px #555;
 }
+
+
